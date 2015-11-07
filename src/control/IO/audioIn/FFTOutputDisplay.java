@@ -1,6 +1,7 @@
 package control.IO.audioIn;
 
 
+import java.awt.BasicStroke;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -8,9 +9,12 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.image.BufferStrategy;
 
 import control.main.Driver;
+
+import org.apache.commons.math3.analysis.function.Sqrt;
 
 @SuppressWarnings("serial")
 public class FFTOutputDisplay extends Canvas implements Runnable {
@@ -18,25 +22,29 @@ public class FFTOutputDisplay extends Canvas implements Runnable {
 
 	Thread agentsPreview;
 
-	static boolean running;
-	public static boolean drawGradientMap = false;
+	private static boolean running;
+	
 
-	double scale;
-	int xOffset = 40;
-	int yOffset = 15;
+//	double scale;
+//	int xOffset = 40;
+//	int yOffset = 15;
 
 	static int numBars;
 	static int barTimeout = 3000; // 3 seconds
 	static long lastBarTime, secLastTap;
 	static double avgTime = 0;
 	static double avgMillis;
+	
+	Sqrt sqrt;
 
 	public FFTOutputDisplay() {
 		
-		setSize(800, 800);
-		setMaximumSize(new Dimension(800, 800));
-		setMinimumSize(getMaximumSize());
-		setPreferredSize(getMaximumSize());
+//		setSize(400, 250);
+//		setMaximumSize(new Dimension(400, 250));
+//		setMinimumSize(getMaximumSize());
+//		setPreferredSize(getMaximumSize());
+		
+		sqrt = new Sqrt();
 
 		Driver.trace("Starting preview window thread.");
 	}
@@ -70,20 +78,24 @@ public class FFTOutputDisplay extends Canvas implements Runnable {
 
 		while (running) {
 
-			//scale = 800 / Universe.getBounds(0);
 
 			long now = System.nanoTime();
-			// System.out.println((double) ((now-lastTime)/timePerTick));
+			
 			delta += ((now - lastTime) / timePerTick);
-			// System.out.println(delta);
+			//System.out.println(delta);
 			lastTime = now;
 
+			if (delta >= 5) {
+				delta = 1.2;
+				Driver.trace("dropping main ticks");
+			}
+			
 			while (delta >= 1) {
-
+				render(bs);
 				delta--;
 			}
 
-			render(bs);
+			
 			//System.out.println("render complete");
 		}
 
@@ -103,12 +115,19 @@ public class FFTOutputDisplay extends Canvas implements Runnable {
 		g2d.fillRect(0, 0, getWidth(), getHeight());
 		
 		//FFT OUTPUT
-		g2d.setColor(Color.RED);
+		int lineThickness = 2;
+		g2d.setStroke(new BasicStroke(lineThickness));
 		
-		int lineThickness = 1;
-		if (AudioAnalyser.getTransformOutput() != null) {
+		if (AudioAnalyser.getTransformRealOutput() != null) {
 			for (int i = 0; i < AudioAnalyser.getTransformRealOutput().length; i++) {
-				g2d.drawLine(5+lineThickness*i, 100, 5+lineThickness*i, (int) (100+0.005*(AudioAnalyser.getTransformRealOutput()[i])));
+				g2d.setColor(Color.YELLOW);
+				//g2d.drawLine(15+lineThickness*i, 500, 15+lineThickness*i, (int) (500-0.005*(AudioAnalyser.getTransformRealOutput()[i])));
+				g2d.drawLine(15+lineThickness*i, 500, 15+lineThickness*i, (int) (500-sqrt.value(AudioAnalyser.getTransformRealOutput()[i])));
+				g2d.setColor(Color.RED);
+				//g2d.drawLine(15+lineThickness*i, 500, 15+lineThickness*i, (int) (500-0.005*(AudioAnalyser.getTransformRealOutput()[i])));
+				g2d.drawLine(15+lineThickness*i, 500, 15+lineThickness*i, (int) (500-0.6*sqrt.value(AudioAnalyser.getTransformRealOutput()[i])));
+				g2d.setColor(Color.BLUE.brighter().brighter());
+				g2d.drawLine(15+lineThickness*i, 500, 15+lineThickness*i, (int) (500-0.2*sqrt.value(AudioAnalyser.getTransformRealOutput()[i])));
 			}
 		}
 

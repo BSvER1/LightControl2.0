@@ -29,7 +29,7 @@ public class SoundCaptureThread implements Runnable {
 	AudioInputStream audioInputStream;
 
 	ByteArrayOutputStream out;
-	ByteArrayOutputStream out2;
+//	ByteArrayOutputStream out2;
 	
 	byte[] data;
 	
@@ -125,11 +125,12 @@ public class SoundCaptureThread implements Runnable {
 
 		// capture data to array/s
 		out = new ByteArrayOutputStream();
-		out2 = new ByteArrayOutputStream();
+//		out2 = new ByteArrayOutputStream();
 		frameSizeInBytes = format.getFrameSize();
 		bufferLengthInFrames = length;
 		bufferLengthInBytes = bufferLengthInFrames * frameSizeInBytes;
-		data = new byte[bufferLengthInBytes];
+		//data = new byte[bufferLengthInBytes];
+		data = new byte[88200];
 		
 		tLine.start();
 		
@@ -172,10 +173,12 @@ public class SoundCaptureThread implements Runnable {
 		
 		while (running && tLine != null) {
 			//if (bin == 0) {
-				if ((numBytesRead = tLine.read(data, 0, bufferLengthInBytes)) == -1)
-					break;
-
-				out.write(data, 0, numBytesRead);
+				
+//				if ((numBytesRead = tLine.read(data, 0, bufferLengthInBytes)) == -1)
+//					break;
+//
+//				out.write(data, 0, numBytesRead);
+				
 				//tLine.flush();
 //			}
 //			else {
@@ -186,6 +189,19 @@ public class SoundCaptureThread implements Runnable {
 //				out2.write(data, 0, numBytesRead);
 //				//tLine.flush();
 //			}
+			int numReady = tLine.available();
+			//Driver.trace("" + numReady);
+			if (numReady > 0) {
+				numBytesRead = tLine.read(data, 0, numReady);
+				
+				out.write(data, 0, numBytesRead);
+			}
+			
+			try {
+				Thread.sleep(5);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -193,58 +209,61 @@ public class SoundCaptureThread implements Runnable {
 		return out;
 	}
 
-	public void setOut(ByteArrayOutputStream out) {
-		this.out = out;
-	}
+//	public void setOut(ByteArrayOutputStream out) {
+//		this.out = out;
+//	}
 
-	public ByteArrayOutputStream getOut2() {
-		return out2;
-	}
+//	public ByteArrayOutputStream getOut2() {
+//		return out2;
+//	}
 
-	public void setOut2(ByteArrayOutputStream out2) {
-		this.out2 = out2;
-	}
+//	public void setOut2(ByteArrayOutputStream out2) {
+//		this.out2 = out2;
+//	}
 
 	public void resetOut() {
 		out.reset();
 	}
 
-	public void resetOut2() {
-		out2.reset();
-	}
+//	public void resetOut2() {
+//		out2.reset();
+//	}
 
 	public byte[] getOutAsByteArray() {
 		return out.toByteArray();
 	}
 
-	public byte[] getOut2AsByteArray() {
-		return out2.toByteArray();
-	}
+//	public byte[] getOut2AsByteArray() {
+//		return out2.toByteArray();
+//	}
 	
 	public double[] getOutAsDouble() {
 		return floatMe(shortMe(out.toByteArray()));
 	}
 	
-	public double[] getOut2AsDouble() {
-		return floatMe(shortMe(out2.toByteArray()));
-	}
+//	public double[] getOut2AsDouble() {
+//		return floatMe(shortMe(out2.toByteArray()));
+//	}
 	
 	public double[] getSound() {
-		if (bin == 0) {
-			return getOut2AsDouble();
-		} else {
+//		if (bin == 0) {
+//			return getOut2AsDouble();
+//		} else {
 			return getOutAsDouble();
-		}
+//		}
 	}
 
+	@Deprecated
 	public int getBin() {
 		return bin;
 	}
 
+	@Deprecated
 	public void setBin(int bin) {
 		SoundCaptureThread.bin = bin;
 	}
 
+	@Deprecated
 	public void flipBin() {
 		if (bin == 0) bin = 1;
 		else if (bin == 1) bin = 0;
@@ -257,7 +276,7 @@ public class SoundCaptureThread implements Runnable {
 
 	public static double[] floatMe(short[] pcms) {
 		double[] floaters = new double[pcms.length];
-		//System.out.println("Creating double array of lenght " + floaters.length);
+		//System.out.println("Creating double array of length " + floaters.length);
 		for (int i = 0; i < pcms.length; i++) {
 			floaters[i] = pcms[i];
 		}
@@ -266,7 +285,7 @@ public class SoundCaptureThread implements Runnable {
 
 	public static short[] shortMe(byte[] bytes) {
 		short[] out = new short[bytes.length / 2]; // will drop last byte if odd number
-		//System.out.println("Creating short array of lenght " + out.length);
+		//System.out.println("Creating short array of length " + out.length);
 		ByteBuffer bb = ByteBuffer.wrap(bytes);
 		for (int i = 0; i < out.length; i++) {
 			out[i] = bb.getShort();

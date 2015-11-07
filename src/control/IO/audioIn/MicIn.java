@@ -61,7 +61,7 @@ public class MicIn {
 		Driver.trace("starting fft output threads");
 
 		frame = new JFrame("FFT output");
-		frame.setBounds(100, 100, 850, 850);
+		frame.setBounds(100, 100, 560, 550);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//frame.getContentPane().setLayout(new MigLayout("",
 		//		"[0px,growprio 50,grow,shrinkprio 50][800px][0px,growprio 50,grow,shrinkprio 50]",

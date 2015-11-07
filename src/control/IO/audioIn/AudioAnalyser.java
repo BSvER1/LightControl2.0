@@ -73,19 +73,15 @@ public class AudioAnalyser implements Runnable {
 //						mic.resetOut2();
 //					}
 //				} else {
-					if (mic.getOutAsDouble().length >= length) {
+					//if (mic.getOutAsDouble().length >= length) {
 						fftOutput = fft.transform(Arrays.copyOf(mic.getOutAsDouble(), length), TransformType.FORWARD);
 						mic.resetOut();
-						
-						
-					
 
-				
 						fftOutputReal = new double[fftOutput.length/4];
 						for (int i = 1; i < 1 + fftOutput.length/4; i++) {
 							fftOutputReal[i-1] = Math.sqrt(Math.pow(fftOutput[i].getReal(), 2) + Math.pow(fftOutput[i].getImaginary(), 2));
 						}
-					}
+					//}
 				
 //				}
 				
