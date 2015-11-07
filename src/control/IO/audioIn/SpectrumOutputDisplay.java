@@ -11,18 +11,26 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
 
 import control.main.Driver;
 
 import org.apache.commons.math3.analysis.function.Sqrt;
 
 @SuppressWarnings("serial")
-public class FFTOutputDisplay extends Canvas implements Runnable {
+public class SpectrumOutputDisplay extends Canvas implements Runnable {
 
 
-	Thread fftPreview;
+	Thread spectrumDisplay;
 
 	private static boolean running;
+	
+	//private double data[][];
+	
+	private BufferedImage data;
+	
+	int historyLength = (int) Math.pow(2, 8);
+	
 	
 
 //	double scale;
@@ -37,7 +45,7 @@ public class FFTOutputDisplay extends Canvas implements Runnable {
 	
 	Sqrt sqrt;
 
-	public FFTOutputDisplay() {
+	public SpectrumOutputDisplay() {
 		
 //		setSize(400, 250);
 //		setMaximumSize(new Dimension(400, 250));
@@ -45,17 +53,27 @@ public class FFTOutputDisplay extends Canvas implements Runnable {
 //		setPreferredSize(getMaximumSize());
 		
 		sqrt = new Sqrt();
+		
+		data = new BufferedImage(historyLength, SoundCaptureThread.length/4, BufferedImage.TYPE_3BYTE_BGR);
+		
+		for (int i = 0; i < data.getWidth(); i++) {
+			for (int j = 0; j < data.getHeight(); j++) {
+				data.setRGB(i, j, Color.BLACK.getRGB());
+			}
+		}
 
 	}
 
 	public void start() {
 		
-		Driver.trace("Starting FFT Previewer Thread");
+		Driver.trace("Starting Spectrum Display Thread");
 		
-		fftPreview = new Thread(this);
-		fftPreview.setName("FFT Previewer");
+		
+		
+		spectrumDisplay = new Thread(this);
+		spectrumDisplay.setName("SpectrumDisplay");
 		running = true;
-		fftPreview.start();
+		spectrumDisplay.start();
 
 		invalidate();
 	}
@@ -63,7 +81,7 @@ public class FFTOutputDisplay extends Canvas implements Runnable {
 	@Override
 	public void run() {
 		long lastTime = System.nanoTime();
-		double amountOfTicks = 60.0;// per second
+		double amountOfTicks = 30.0;// per second
 		double timePerTick = 1000000000 / amountOfTicks;
 		double delta = 0;
 
@@ -88,10 +106,12 @@ public class FFTOutputDisplay extends Canvas implements Runnable {
 
 			if (delta >= 5) {
 				delta = 1.2;
-				Driver.trace("dropping main ticks");
+				//Driver.trace("dropping main ticks");
 			}
 			
 			while (delta >= 1) {
+				shiftDown();
+				fillNext();
 				render(bs);
 				delta--;
 			}
@@ -103,6 +123,25 @@ public class FFTOutputDisplay extends Canvas implements Runnable {
 		bs.dispose();
 	}
 
+	private void shiftDown() {
+		for (int i = 1; i < data.getWidth(); i++) {
+			for (int j = 0; j < data.getHeight(); j++) {
+				data.setRGB(i-1, j, data.getRGB(i, j));
+			}
+		}
+	}
+	
+	private void fillNext() {
+		double maxValue = 0;
+		for (int i = 0; i < data.getHeight(); i++) {
+			data.setRGB(historyLength-1, i, (int) (sqrt.value(AudioAnalyser.getTransformRealOutput()[i]))+50);
+			if (data.getRGB(historyLength-1, i) > maxValue) {
+				maxValue = data.getRGB(historyLength-1,i);
+			}
+		}
+		
+	}
+	
 	public void render(BufferStrategy bs) {
 
 		Graphics g = bs.getDrawGraphics();
@@ -115,36 +154,14 @@ public class FFTOutputDisplay extends Canvas implements Runnable {
 		g2d.setColor(Color.BLACK);
 		g2d.fillRect(0, 0, getWidth(), getHeight());
 		
-		//FFT OUTPUT
-		int lineThickness = 1;
-		g2d.setStroke(new BasicStroke(lineThickness));
-		
-		int yPos = getParent().getHeight()-20;
-		double xScale = (Double.valueOf(AudioAnalyser.getTransformRealOutput().length)/Double.valueOf(getParent().getWidth()-40));
-		if (xScale <= 0) {
-			xScale = 1;
-		}
-		//Driver.trace(""+xScale);
-		
-		
-		if (AudioAnalyser.getTransformRealOutput() != null) {
-			for (int i = 0; i < getParent().getWidth(); i++) {
-				if (i * xScale < AudioAnalyser.getTransformRealOutput().length) {
-					g2d.setColor(Color.YELLOW);
-					g2d.drawLine(15+lineThickness*i, yPos, 15+lineThickness*i, 
-							(int) (yPos-sqrt.value(AudioAnalyser.getTransformRealOutput()[(int) (i*xScale)])));
-
-					g2d.setColor(Color.RED);
-					g2d.drawLine(15+lineThickness*i, yPos, 15+lineThickness*i, 
-							(int) (yPos-0.6*sqrt.value(AudioAnalyser.getTransformRealOutput()[(int) (i*xScale)])));
-
-					g2d.setColor(Color.BLUE.brighter().brighter());
-					g2d.drawLine(15+lineThickness*i, yPos, 15+lineThickness*i, 
-							(int) (yPos-0.2*sqrt.value(AudioAnalyser.getTransformRealOutput()[(int) (i*xScale)])));
-				}
-			}
+		int yScale = 1;
+		while (data.getHeight()/yScale > getParent().getHeight()) {
+			yScale++;
 		}
 		
+		
+		g2d.drawImage(data, 0, 0, data.getWidth(), data.getHeight()/yScale, null);
+		//g2d.drawImage(data, 0, 0, null);
 
 		g.dispose();
 		g2d.dispose();

@@ -15,8 +15,10 @@ public class MicIn {
 	private Thread audioAnalysisRunner;
 	private Thread micInRunner;
 	
-	private JFrame frame;
+	private JFrame fftFrame;
+	private JFrame spectrumFrame;
 	private FFTOutputDisplay fftDisplay;
+	private SpectrumOutputDisplay specDisplay;
 	
 	public MicIn() {
 		
@@ -29,17 +31,17 @@ public class MicIn {
 	}
 	
 	public void startThreads() {
+		Driver.trace("Starting MicSoundCapture Thread");
 		micInRunner = new Thread(mic);
 		micInRunner.setName("MicSoundCapture");
 		mic.setRunning(true);
 		micInRunner.start();
 		
+		Driver.trace("Starting AudioAnalysisProvider Thread");
 		audioAnalysisRunner = new Thread(aa);
 		audioAnalysisRunner.setName("AudioAnalysisProvider");
 		aa.setRunning(true);
 		audioAnalysisRunner.start();
-		
-		Driver.trace("threads started");
 	}
 	
 	public void stopThreads() {
@@ -58,21 +60,37 @@ public class MicIn {
 	private void showFFTOutput() {
 		
 		
-		Driver.trace("starting fft output threads");
+		//Driver.trace("starting fft output threads");
 
-		frame = new JFrame("FFT output");
-		frame.setBounds(100, 100, 560, 550);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		fftFrame = new JFrame("FFT output");
+		fftFrame.setBounds(100, 100, 560, 550);
+		fftFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//frame.getContentPane().setLayout(new MigLayout("",
 		//		"[0px,growprio 50,grow,shrinkprio 50][800px][0px,growprio 50,grow,shrinkprio 50]",
 		//		"[0px,growprio 50,grow,shrinkprio 50][800px][0px,growprio 50,grow,shrinkprio 50]"));
 		fftDisplay = new FFTOutputDisplay();
-		frame.add(fftDisplay);
-		frame.setVisible(true);
-		frame.setAlwaysOnTop(true);
+		fftFrame.add(fftDisplay);
+		fftFrame.setVisible(true);
+		fftFrame.setAlwaysOnTop(true);
 		//frame.setAlwaysOnTop(false);
 
+		
 		fftDisplay.start();
+		
+		spectrumFrame = new JFrame("Spectrum output");
+		spectrumFrame.setBounds(100, 100, 560, 550);
+		spectrumFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//frame.getContentPane().setLayout(new MigLayout("",
+		//		"[0px,growprio 50,grow,shrinkprio 50][800px][0px,growprio 50,grow,shrinkprio 50]",
+		//		"[0px,growprio 50,grow,shrinkprio 50][800px][0px,growprio 50,grow,shrinkprio 50]"));
+		specDisplay = new SpectrumOutputDisplay();
+		spectrumFrame.add(specDisplay);
+		spectrumFrame.setVisible(true);
+		spectrumFrame.setAlwaysOnTop(true);
+		//frame.setAlwaysOnTop(false);
+
+		
+		specDisplay.start();
 
 
 	}

@@ -40,8 +40,8 @@ public class AudioAnalyser implements Runnable {
 		double amountOfTicks = 20.0;//per second
 		double timePerTick = 1.0e9/amountOfTicks;
 		double delta = 0;
-		long timer = System.currentTimeMillis();
-		int ticks = 0;
+		//long timer = System.currentTimeMillis();
+		//int ticks = 0;
 		
 //		try {
 //			Thread.sleep(1000);
@@ -55,45 +55,35 @@ public class AudioAnalyser implements Runnable {
 			delta += ((now-lastTime)/timePerTick);
 			lastTime = now;
 			
-			if (delta >= 2) { // half a tick behind
+			if (delta >= 2) { 
 				System.err.println("FFT ticks skipped");
 				delta = 1.1;
 			}
 			while(delta>=1){
-				
-				//System.out.println("bin 0: " +Game.getCaptureThread().getOut().size());
-				//System.out.println("bin 1: "+Game.getCaptureThread().getOut2().size());
-				
-				//mic.flipBin(); //starts at 0
-				
-//				if (mic.getBin() == 0) {
-//					//Driver.trace("" + mic.getOut2AsDouble().length);
-//					if (mic.getOut2AsDouble().length >= length) {
-//						fftOutput = fft.transform(Arrays.copyOf(mic.getOut2AsDouble(), length), TransformType.FORWARD);
-//						mic.resetOut2();
-//					}
-//				} else {
-					//if (mic.getOutAsDouble().length >= length) {
-						fftOutput = fft.transform(Arrays.copyOf(mic.getOutAsDouble(), length), TransformType.FORWARD);
-						mic.resetOut();
+				fftOutput = fft.transform(Arrays.copyOf(mic.getOutAsDouble(), length), TransformType.FORWARD);
+				mic.resetOut();
 
-						fftOutputReal = new double[fftOutput.length/4];
-						for (int i = 1; i < 1 + fftOutput.length/4; i++) {
-							fftOutputReal[i-1] = Math.sqrt(Math.pow(fftOutput[i].getReal(), 2) + Math.pow(fftOutput[i].getImaginary(), 2));
-						}
-					//}
+				fftOutputReal = new double[fftOutput.length/4];
+				for (int i = 1; i < 1 + fftOutput.length/4; i++) {
+					fftOutputReal[i-1] = Math.sqrt(Math.pow(fftOutput[i].getReal(), 2) + Math.pow(fftOutput[i].getImaginary(), 2));
+				}
 				
+//				for (int i = 1; i < 1 + fftOutput.length/4; i++) {
+//					fftOutputReal[i-1] -= fftOutputReal[fftOutput.length/4 -1];
+//					if (fftOutputReal[i-1] < 0) {
+//						fftOutputReal[i-1] = 0;
+//					}
 //				}
-				
-				ticks++;
+
+				//ticks++;
 				delta--;
 			}
 			
-			if(System.currentTimeMillis()-timer>1000){
-				timer+=1000;
-				//Game.setTPS(ticks);
-				ticks = 0;
-			}
+//			if(System.currentTimeMillis()-timer>1000){
+//				timer+=1000;
+//				//Game.setTPS(ticks);
+//				ticks = 0;
+//			}
 		}
 		
 	}

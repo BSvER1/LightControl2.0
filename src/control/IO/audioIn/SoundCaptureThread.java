@@ -39,10 +39,8 @@ public class SoundCaptureThread implements Runnable {
 	int bufferLengthInBytes;
 
 	boolean running = true;
-
-	private static int bin = 0;
 	
-	public static int length = 1024;
+	public static int length = (int) Math.pow(2, 13);
 	
 
 	public SoundCaptureThread() {
@@ -130,11 +128,11 @@ public class SoundCaptureThread implements Runnable {
 		bufferLengthInFrames = length;
 		bufferLengthInBytes = bufferLengthInFrames * frameSizeInBytes;
 		//data = new byte[bufferLengthInBytes];
-		data = new byte[88200];
+		data = new byte[(int) (rate*channels)];
 		
 		tLine.start();
 		
-		Driver.trace("finished init");
+		Driver.trace("Successfully initialised.");
 	}
 
 	private void shutDown(String message) {
@@ -172,23 +170,6 @@ public class SoundCaptureThread implements Runnable {
 	public void run() {
 		
 		while (running && tLine != null) {
-			//if (bin == 0) {
-				
-//				if ((numBytesRead = tLine.read(data, 0, bufferLengthInBytes)) == -1)
-//					break;
-//
-//				out.write(data, 0, numBytesRead);
-				
-				//tLine.flush();
-//			}
-//			else {
-//				if ((numBytesRead = tLine.read(data, 0, bufferLengthInBytes)) == -1)
-//					break;
-//
-//				
-//				out2.write(data, 0, numBytesRead);
-//				//tLine.flush();
-//			}
 			int numReady = tLine.available();
 			//Driver.trace("" + numReady);
 			if (numReady > 0) {
@@ -209,65 +190,20 @@ public class SoundCaptureThread implements Runnable {
 		return out;
 	}
 
-//	public void setOut(ByteArrayOutputStream out) {
-//		this.out = out;
-//	}
-
-//	public ByteArrayOutputStream getOut2() {
-//		return out2;
-//	}
-
-//	public void setOut2(ByteArrayOutputStream out2) {
-//		this.out2 = out2;
-//	}
-
 	public void resetOut() {
 		out.reset();
 	}
 
-//	public void resetOut2() {
-//		out2.reset();
-//	}
-
 	public byte[] getOutAsByteArray() {
 		return out.toByteArray();
 	}
-
-//	public byte[] getOut2AsByteArray() {
-//		return out2.toByteArray();
-//	}
 	
 	public double[] getOutAsDouble() {
 		return floatMe(shortMe(out.toByteArray()));
 	}
 	
-//	public double[] getOut2AsDouble() {
-//		return floatMe(shortMe(out2.toByteArray()));
-//	}
-	
 	public double[] getSound() {
-//		if (bin == 0) {
-//			return getOut2AsDouble();
-//		} else {
-			return getOutAsDouble();
-//		}
-	}
-
-	@Deprecated
-	public int getBin() {
-		return bin;
-	}
-
-	@Deprecated
-	public void setBin(int bin) {
-		SoundCaptureThread.bin = bin;
-	}
-
-	@Deprecated
-	public void flipBin() {
-		if (bin == 0) bin = 1;
-		else if (bin == 1) bin = 0;
-		else throw new RuntimeException("SoundCaptureThread in illegal state");
+		return getOutAsDouble();
 	}
 
 	public void setRunning(boolean running) {
