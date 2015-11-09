@@ -9,7 +9,7 @@ public class Driver {
 	private static boolean TRACING = true;
 	
 	public static void main(String[] args) {
-		Driver.trace("Hello World!");
+		Driver.trace("Hello Light Control 2.0!");
 
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {

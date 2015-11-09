@@ -2,6 +2,8 @@ package control.IO.audioIn;
 
 import java.util.Arrays;
 
+import org.apache.commons.math3.analysis.function.Pow;
+import org.apache.commons.math3.analysis.function.Sqrt;
 import org.apache.commons.math3.complex.Complex;
 import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.apache.commons.math3.transform.DftNormalization;
@@ -20,11 +22,16 @@ public class AudioAnalyser implements Runnable {
 	private static Complex[] fftOutput;
 	private static double[] fftOutputReal;
 	
+	Sqrt sqrt;
+	Pow pow;
+	
 	int length = SoundCaptureThread.length;
 	
 	public AudioAnalyser(SoundCaptureThread mic) {
 		this.mic = mic;
 		fft = new FastFourierTransformer(DftNormalization.UNITARY);
+		sqrt = new Sqrt();
+		pow = new Pow();
 		
 		fftOutput = new Complex[length];
 		
@@ -37,7 +44,7 @@ public class AudioAnalyser implements Runnable {
 	public void run() {
 		
 		long lastTime = System.nanoTime();
-		double amountOfTicks = 20.0;//per second
+		double amountOfTicks = 30.0;//per second
 		double timePerTick = 1.0e9/amountOfTicks;
 		double delta = 0;
 		//long timer = System.currentTimeMillis();
@@ -65,7 +72,7 @@ public class AudioAnalyser implements Runnable {
 
 				fftOutputReal = new double[fftOutput.length/4];
 				for (int i = 1; i < 1 + fftOutput.length/4; i++) {
-					fftOutputReal[i-1] = Math.sqrt(Math.pow(fftOutput[i].getReal(), 2) + Math.pow(fftOutput[i].getImaginary(), 2));
+					fftOutputReal[i-1] = sqrt.value(pow.value(fftOutput[i].getReal(), 2) + pow.value(fftOutput[i].getImaginary(), 2));
 				}
 				
 //				for (int i = 1; i < 1 + fftOutput.length/4; i++) {

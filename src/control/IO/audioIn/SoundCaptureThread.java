@@ -176,12 +176,12 @@ public class SoundCaptureThread implements Runnable {
 				numBytesRead = tLine.read(data, 0, numReady);
 				
 				out.write(data, 0, numBytesRead);
-			}
-			
-			try {
-				Thread.sleep(5);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			} else {
+				try {
+					Thread.sleep(1);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -199,7 +199,8 @@ public class SoundCaptureThread implements Runnable {
 	}
 	
 	public double[] getOutAsDouble() {
-		return floatMe(shortMe(out.toByteArray()));
+		return doubleMe(out.toByteArray());
+		//return floatMe(shortMe(out.toByteArray()));
 	}
 	
 	public double[] getSound() {
@@ -209,8 +210,20 @@ public class SoundCaptureThread implements Runnable {
 	public void setRunning(boolean running) {
 		this.running = running;
 	}
+	
+	public static double[] doubleMe(byte[] bytes) {
+		double[] out = new double[bytes.length / 2]; // will drop last byte if odd number
+		//System.out.println("Creating short array of length " + out.length);
+		ByteBuffer bb = ByteBuffer.wrap(bytes);
+		for (int i = 0; i < out.length; i++) {
+			out[i] = bb.getShort();
+		}
+		return out;
+	}
 
+	@Deprecated
 	public static double[] floatMe(short[] pcms) {
+		Driver.trace("This method is Deprecated");
 		double[] floaters = new double[pcms.length];
 		//System.out.println("Creating double array of length " + floaters.length);
 		for (int i = 0; i < pcms.length; i++) {
@@ -219,7 +232,9 @@ public class SoundCaptureThread implements Runnable {
 		return floaters;
 	}
 
+	@Deprecated
 	public static short[] shortMe(byte[] bytes) {
+		Driver.trace("This method is Deprecated");
 		short[] out = new short[bytes.length / 2]; // will drop last byte if odd number
 		//System.out.println("Creating short array of length " + out.length);
 		ByteBuffer bb = ByteBuffer.wrap(bytes);

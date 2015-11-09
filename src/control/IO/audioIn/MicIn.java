@@ -73,7 +73,6 @@ public class MicIn {
 		fftFrame.setVisible(true);
 		fftFrame.setAlwaysOnTop(true);
 		//frame.setAlwaysOnTop(false);
-
 		
 		fftDisplay.start();
 		

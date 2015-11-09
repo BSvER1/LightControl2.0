@@ -42,6 +42,7 @@ public class SpectrumOutputDisplay extends Canvas implements Runnable {
 	static long lastBarTime, secLastTap;
 	static double avgTime = 0;
 	static double avgMillis;
+	int yScale;
 	
 	Sqrt sqrt;
 
@@ -81,8 +82,8 @@ public class SpectrumOutputDisplay extends Canvas implements Runnable {
 	@Override
 	public void run() {
 		long lastTime = System.nanoTime();
-		double amountOfTicks = 30.0;// per second
-		double timePerTick = 1000000000 / amountOfTicks;
+		double amountOfTicks = 10.0; // per second
+		double timePerTick = 1.0e9 / amountOfTicks;
 		double delta = 0;
 
 
@@ -106,7 +107,12 @@ public class SpectrumOutputDisplay extends Canvas implements Runnable {
 
 			if (delta >= 5) {
 				delta = 1.2;
-				//Driver.trace("dropping main ticks");
+				Driver.trace("dropping ticks");
+			}
+			
+			yScale = 1;
+			while (data.getHeight()/yScale >= getParent().getHeight()) {
+				yScale++;
 			}
 			
 			while (delta >= 1) {
@@ -132,12 +138,14 @@ public class SpectrumOutputDisplay extends Canvas implements Runnable {
 	}
 	
 	private void fillNext() {
-		double maxValue = 0;
+		//double maxValue = 0;
 		for (int i = 0; i < data.getHeight(); i++) {
-			data.setRGB(historyLength-1, i, (int) (sqrt.value(AudioAnalyser.getTransformRealOutput()[i]))+50);
-			if (data.getRGB(historyLength-1, i) > maxValue) {
-				maxValue = data.getRGB(historyLength-1,i);
-			}
+			data.setRGB(historyLength-1, i, (int) (sqrt.value(AudioAnalyser.getTransformRealOutput()[i])+25));
+//			Color col = new Color(data.getRGB(historyLength-1, i));
+//			data.setRGB(historyLength-1, i, col.brighter().brighter().brighter().getRGB());
+//			if (data.getRGB(historyLength-1, i) > maxValue) {
+//				maxValue = data.getRGB(historyLength-1,i);
+//			}
 		}
 		
 	}
@@ -147,18 +155,13 @@ public class SpectrumOutputDisplay extends Canvas implements Runnable {
 		Graphics g = bs.getDrawGraphics();
 		Graphics2D g2d = (Graphics2D) g;
 
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		//g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		g2d.setFont(new Font("Serif", Font.PLAIN, 8));
 
 		g2d.setColor(Color.BLACK);
-		g2d.fillRect(0, 0, getWidth(), getHeight());
-		
-		int yScale = 1;
-		while (data.getHeight()/yScale > getParent().getHeight()) {
-			yScale++;
-		}
-		
+		g2d.fillRect(0, data.getHeight()/yScale, getParent().getWidth(), data.getHeight()/yScale);
+		g2d.fillRect(data.getWidth(), 0, getParent().getWidth(), data.getHeight()/yScale);
 		
 		g2d.drawImage(data, 0, 0, data.getWidth(), data.getHeight()/yScale, null);
 		//g2d.drawImage(data, 0, 0, null);
