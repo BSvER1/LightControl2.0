@@ -9,6 +9,9 @@ import control.main.Driver;
 
 public class MicIn {
 
+	private boolean showFFT = true;
+	private boolean showSpectrum = false;
+	
 	private AudioAnalyser aa;
 	private SoundCaptureThread mic;
 	
@@ -58,39 +61,40 @@ public class MicIn {
 	}
 	
 	private void showFFTOutput() {
-		
-		
 		//Driver.trace("starting fft output threads");
 
-		fftFrame = new JFrame("FFT output");
-		fftFrame.setBounds(100, 100, 560, 550);
-		fftFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//frame.getContentPane().setLayout(new MigLayout("",
-		//		"[0px,growprio 50,grow,shrinkprio 50][800px][0px,growprio 50,grow,shrinkprio 50]",
-		//		"[0px,growprio 50,grow,shrinkprio 50][800px][0px,growprio 50,grow,shrinkprio 50]"));
-		fftDisplay = new FFTOutputDisplay();
-		fftFrame.add(fftDisplay);
-		fftFrame.setVisible(true);
-		fftFrame.setAlwaysOnTop(true);
-		//frame.setAlwaysOnTop(false);
+		if (showFFT) {
+			fftFrame = new JFrame("FFT output");
+			fftFrame.setBounds(100, 100, 560, 550);
+			fftFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			//frame.getContentPane().setLayout(new MigLayout("",
+			//		"[0px,growprio 50,grow,shrinkprio 50][800px][0px,growprio 50,grow,shrinkprio 50]",
+			//		"[0px,growprio 50,grow,shrinkprio 50][800px][0px,growprio 50,grow,shrinkprio 50]"));
+			fftDisplay = new FFTOutputDisplay();
+			fftFrame.add(fftDisplay);
+			fftFrame.setVisible(true);
+			fftFrame.setAlwaysOnTop(true);
+			//frame.setAlwaysOnTop(false);
+			
+			fftDisplay.start();
+		}
 		
-		fftDisplay.start();
-		
-		spectrumFrame = new JFrame("Spectrum output");
-		spectrumFrame.setBounds(100, 100, 560, 550);
-		spectrumFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//frame.getContentPane().setLayout(new MigLayout("",
-		//		"[0px,growprio 50,grow,shrinkprio 50][800px][0px,growprio 50,grow,shrinkprio 50]",
-		//		"[0px,growprio 50,grow,shrinkprio 50][800px][0px,growprio 50,grow,shrinkprio 50]"));
-		specDisplay = new SpectrumOutputDisplay();
-		spectrumFrame.add(specDisplay);
-		spectrumFrame.setVisible(true);
-		spectrumFrame.setAlwaysOnTop(true);
-		//frame.setAlwaysOnTop(false);
-
-		
-		specDisplay.start();
-
+		if (showSpectrum) {
+			spectrumFrame = new JFrame("Spectrum output");
+			spectrumFrame.setBounds(100, 100, 560, 550);
+			spectrumFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			//frame.getContentPane().setLayout(new MigLayout("",
+			//		"[0px,growprio 50,grow,shrinkprio 50][800px][0px,growprio 50,grow,shrinkprio 50]",
+			//		"[0px,growprio 50,grow,shrinkprio 50][800px][0px,growprio 50,grow,shrinkprio 50]"));
+			specDisplay = new SpectrumOutputDisplay();
+			spectrumFrame.add(specDisplay);
+			spectrumFrame.setVisible(true);
+			spectrumFrame.setAlwaysOnTop(true);
+			//frame.setAlwaysOnTop(false);
+	
+			
+			specDisplay.start();
+		}
 
 	}
 	
