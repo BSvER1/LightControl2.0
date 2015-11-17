@@ -13,7 +13,8 @@ public class Driver {
 
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				new MicIn();
+				
+				new TestWindow();
 			}
 		});
 		

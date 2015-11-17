@@ -52,8 +52,8 @@ public class MicIn {
 		aa.setRunning(false);
 	}
 	
-	public Complex[] getTransformOutput() {
-		return AudioAnalyser.getTransformOutput();
+	public double[] getTransformOutput() {
+		return AudioAnalyser.getTransformRealOutput();
 	}
 	
 	public double getBPM() {
