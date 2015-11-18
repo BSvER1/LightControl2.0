@@ -2,7 +2,7 @@ package control.main;
 
 import java.awt.EventQueue;
 
-import control.IO.audioIn.MicIn;
+import control.visualiser.display.VisualiserWindow;
 
 public class Driver {
 
@@ -14,7 +14,7 @@ public class Driver {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				
-				new TestWindow();
+				new VisualiserWindow();
 			}
 		});
 		

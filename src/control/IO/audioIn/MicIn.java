@@ -3,13 +3,11 @@ package control.IO.audioIn;
 
 import javax.swing.JFrame;
 
-import org.apache.commons.math3.complex.Complex;
-
 import control.main.Driver;
 
 public class MicIn {
 
-	private boolean showFFT = true;
+	private boolean showFFT = false;
 	private boolean showSpectrum = false;
 	
 	private AudioAnalyser aa;

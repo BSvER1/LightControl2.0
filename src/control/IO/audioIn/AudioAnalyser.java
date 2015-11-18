@@ -1,26 +1,27 @@
 package control.IO.audioIn;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.apache.commons.math3.analysis.function.Pow;
 import org.apache.commons.math3.analysis.function.Sqrt;
 import org.apache.commons.math3.complex.Complex;
-import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.apache.commons.math3.transform.DftNormalization;
 import org.apache.commons.math3.transform.FastFourierTransformer;
 import org.apache.commons.math3.transform.TransformType;
-
-import control.main.Driver;
 
 public class AudioAnalyser implements Runnable {
 
 	private boolean running;
 	
-	private SoundCaptureThread mic;
+	private static SoundCaptureThread mic;
 	private FastFourierTransformer fft;
 	
 	private static Complex[] fftOutput;
 	private static double[] fftOutputReal;
+	
+	private static ArrayList<Double> micOutput;
+	private int numSamples = 2048;
 	
 	Sqrt sqrt;
 	Pow pow;
@@ -38,6 +39,7 @@ public class AudioAnalyser implements Runnable {
 		for (int i = 0; i < fftOutput.length; i++) {
 			fftOutput[i] = new Complex(0.0, 0.0);
 		}
+		micOutput = new ArrayList<Double>();
 	}
 	
 	@Override
@@ -67,9 +69,24 @@ public class AudioAnalyser implements Runnable {
 				delta = 1.1;
 			}
 			while(delta>=1){
-				fftOutput = fft.transform(Arrays.copyOf(mic.getOutAsDouble(), length), TransformType.FORWARD);
+				double[] tempMicOutput = mic.getOutAsDouble();
+				
+				
+				//store mic data
+				for (int i = Math.min(tempMicOutput.length-1, 1000); i >= 0; i--) {
+						micOutput.add(0, tempMicOutput[i]);
+				}
+				
+				while (micOutput.size() > numSamples) {
+					micOutput.remove(micOutput.size()-1);
+				}
+				
+				
+				//calculate fft data
+				tempMicOutput = Arrays.copyOf(mic.getOutAsDouble(), length);
+				fftOutput = fft.transform(tempMicOutput, TransformType.FORWARD);
 				mic.resetOut();
-
+				
 				fftOutputReal = new double[fftOutput.length/4];
 				for (int i = 1; i < 1 + fftOutput.length/4; i++) {
 					fftOutputReal[i-1] = sqrt.value(pow.value(fftOutput[i].getReal(), 2) + pow.value(fftOutput[i].getImaginary(), 2));
@@ -105,6 +122,10 @@ public class AudioAnalyser implements Runnable {
 	
 	public static double[] getTransformRealOutput() {
 		return fftOutputReal;
+	}
+	
+	public static Double[] getMic() {
+		return micOutput.toArray(new Double[] {});
 	}
 	
 

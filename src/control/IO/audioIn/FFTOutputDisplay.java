@@ -4,17 +4,15 @@ package control.IO.audioIn;
 import java.awt.BasicStroke;
 import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.Stroke;
 import java.awt.image.BufferStrategy;
 
-import control.main.Driver;
-
 import org.apache.commons.math3.analysis.function.Sqrt;
+
+import control.main.Driver;
 
 @SuppressWarnings("serial")
 public class FFTOutputDisplay extends Canvas implements Runnable {
