@@ -28,7 +28,7 @@ public class MicIn {
 		
 		startThreads();
 		
-		showFFTOutput();
+		showOutputs();
 	}
 	
 	public void startThreads() {
@@ -58,7 +58,7 @@ public class MicIn {
 		return 0.0;
 	}
 	
-	private void showFFTOutput() {
+	private void showOutputs() {
 		//Driver.trace("starting fft output threads");
 
 		if (showFFT) {
