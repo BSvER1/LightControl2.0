@@ -24,7 +24,7 @@ public class DisplayRenderer extends Canvas implements Runnable {
 	JFrame parent;
 
 	private ArrayList<Visualisation> visualisers;
-	private int currentVisualisation = 0;
+	private int currentVisualisation = 1;
 	
 	private Thread visRenderer;
 

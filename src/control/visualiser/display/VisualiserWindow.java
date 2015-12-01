@@ -82,8 +82,8 @@ public class VisualiserWindow implements KeyListener, MouseListener {
 		    	 visFrame.setVisible(false);
 		         visFrame.dispose();
 		    	 visFrame.setUndecorated(false);
-		    	 //gd[currentScreen].setFullScreenWindow(null);
-		    	 visFrame.setExtendedState(JFrame.NORMAL);
+		    	 gd[currentScreen].setFullScreenWindow(null);
+		    	 //visFrame.setExtendedState(JFrame.NORMAL);
 		    	 visFrame.setBounds(posX, posY, width, height);
 		    	 visFrame.setVisible(true);
 		    	 
@@ -96,9 +96,9 @@ public class VisualiserWindow implements KeyListener, MouseListener {
 		    	 visFrame.setVisible(false);
 		         visFrame.dispose();
 		    	 visFrame.setUndecorated(true);
-		    	 //currentScreen = getScreen();
-		    	 //gd[currentScreen].setFullScreenWindow(visFrame);
-		    	 visFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		    	 currentScreen = getScreen();
+		    	 gd[currentScreen].setFullScreenWindow(visFrame);
+		    	 //visFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		    	 visFrame.setVisible(true);
 		    	 visFrame.validate();
 		     }
