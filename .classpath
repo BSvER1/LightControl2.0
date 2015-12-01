@@ -7,5 +7,11 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/LightControl2.0/commons-math3-3.5-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="jSSC-2.8.0-Release/jssc.jar" sourcepath="jSSC-2.8.0-Release/src/jssc-2.8.0-src.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/LightControl2.0/jSSC-2.8.0-Release/javadoc/jssc-2.8.0-javadoc.jar!/"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="LightControl2.0/jSSC-2.8.0-Release/src/cpp"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
