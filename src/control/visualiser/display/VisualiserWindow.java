@@ -6,34 +6,35 @@ import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.MouseAdapter;
 
 import javax.swing.JFrame;
 
 import control.IO.audioIn.MicIn;
 import control.main.Driver;
+import control.main.system.OsCheck;
 
 
-public class VisualiserWindow implements KeyListener, MouseListener {
+public class VisualiserWindow extends MouseAdapter implements KeyListener {
 
-    private GraphicsDevice gd[] = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
-    private int currentScreen = -1;
-	
+	private GraphicsDevice gd[] = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+	private int currentScreen = -1;
+
 	JFrame visFrame;
-	
+
 	DisplayRenderer renderer;
-	
+
 	boolean isMaximised = false;
-	
+
 	int posX, posY, width, height;
-	
+
 	public VisualiserWindow() {
 		new MicIn();
-		showFFTOutput();
+		showOutput();
 	}
-	
-	private void showFFTOutput() {
-	
+
+	private void showOutput() {
+
 		visFrame = new JFrame("Visualiser");
 		visFrame.setBounds(100, 100, 560, 550);
 		visFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -46,9 +47,9 @@ public class VisualiserWindow implements KeyListener, MouseListener {
 		visFrame.setAlwaysOnTop(true);
 		renderer.addMouseListener(this);
 		renderer.addKeyListener(this);
-		
+
 		//frame.setAlwaysOnTop(false);
-		
+
 
 		renderer.start();
 	}
@@ -56,57 +57,66 @@ public class VisualiserWindow implements KeyListener, MouseListener {
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getClickCount() == 2 && !e.isConsumed()) {
-		     e.consume();
-		     //handle double click event.
-		     Driver.trace("double click");
-		     if (isMaximised) {
-		    	 isMaximised = false;
-		    	 visFrame.setVisible(false);
-		         visFrame.dispose();
-		    	 visFrame.setUndecorated(false);
-		    	 gd[currentScreen].setFullScreenWindow(null);
-		    	 //visFrame.setExtendedState(JFrame.NORMAL);
-		    	 visFrame.setBounds(posX, posY, width, height);
-		    	 visFrame.setVisible(true);
-		    	 
-		     } else {
-		    	 isMaximised = true;
-		    	 posX = visFrame.getX();
-		    	 posY = visFrame.getY();
-		    	 width = visFrame.getWidth();
-		    	 height = visFrame.getHeight();
-		    	 visFrame.setVisible(false);
-		         visFrame.dispose();
-		    	 visFrame.setUndecorated(true);
-		    	 currentScreen = getScreen();
-		    	 gd[currentScreen].setFullScreenWindow(visFrame);
-		    	 //visFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		    	 visFrame.setVisible(true);
-		    	 visFrame.validate();
-		     }
-		     visFrame.revalidate();
+			e.consume();
+			//handle double click event.
+			Driver.trace("double click");
+			toggleFullscreen();
 		}
-		
+
 	}
-	
+
+	private void toggleFullscreen() {
+		if (isMaximised) {
+			visFrame.setVisible(false);
+			visFrame.dispose();
+			visFrame.setUndecorated(false);
+			if (OsCheck.getOperatingSystemType() == OsCheck.OSType.Windows) {
+				visFrame.setExtendedState(JFrame.NORMAL);
+			} else {
+				gd[currentScreen].setFullScreenWindow(null);
+			}
+			visFrame.setBounds(posX, posY, width, height);
+			visFrame.setVisible(true);
+
+		} else {
+			posX = visFrame.getX();
+			posY = visFrame.getY();
+			width = visFrame.getWidth();
+			height = visFrame.getHeight();
+			visFrame.setVisible(false);
+			visFrame.dispose();
+			visFrame.setUndecorated(true);
+			if (OsCheck.getOperatingSystemType() == OsCheck.OSType.Windows) {
+				visFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			} else {
+				currentScreen = getScreen();
+				gd[currentScreen].setFullScreenWindow(visFrame);
+			}
+			visFrame.setVisible(true);
+			visFrame.validate();
+		}
+		isMaximised = !isMaximised;
+		visFrame.revalidate();
+	}
+
 	public int getScreen() {
 		GraphicsConfiguration config = visFrame.getGraphicsConfiguration();
 		GraphicsDevice myScreen = config.getDevice();
@@ -116,41 +126,44 @@ public class VisualiserWindow implements KeyListener, MouseListener {
 		GraphicsDevice[] allScreens = env.getScreenDevices();
 		int myScreenIndex = -1;
 		for (int i = 0; i < allScreens.length; i++) {
-		    if (allScreens[i].equals(myScreen))
-		    {
-		        myScreenIndex = i;
-		        break;
-		    }
+			if (allScreens[i].equals(myScreen))
+			{
+				myScreenIndex = i;
+				break;
+			}
 		}
-		System.out.println("window is on screen" + myScreenIndex);
+		//System.out.println("window is on screen" + myScreenIndex);
 		return myScreenIndex;
 	}
-	
 
-	@Override
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		Driver.trace("entered");
+
+//	@Override
+//	public void mouseEntered(MouseEvent arg0) {
+//		// TODO Auto-generated method stub
+//		Driver.trace("entered");
+//	}
+//
+//	@Override
+//	public void mouseExited(MouseEvent arg0) {
+//		// TODO Auto-generated method stub
+//		Driver.trace("exited");
+//	}
+
+//	@Override
+//	public void mousePressed(MouseEvent arg0) {
+//		// TODO Auto-generated method stub
+//
+//	}
+//
+//	@Override
+//	public void mouseReleased(MouseEvent arg0) {
+//		// TODO Auto-generated method stub
+//
+//	}
+
+	public void setVisible(boolean visibility) {
+		visFrame.setVisible(visibility);
 	}
 
-	@Override
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		Driver.trace("exited");
-	}
 
-	@Override
-	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	
-	
 }

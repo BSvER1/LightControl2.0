@@ -11,10 +11,14 @@ public class Driver {
 	public static void main(String[] args) {
 		Driver.trace("Hello Light Control 2.0!");
 
+		
+		new ProgramControlChooser();
+		
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				
-				new VisualiserWindow();
+				//new ProgramControlChooser();
 			}
 		});
 		

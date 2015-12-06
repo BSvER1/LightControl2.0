@@ -1,13 +1,6 @@
 package control.visualiser.display;
 
-import java.awt.BasicStroke;
 import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 
@@ -15,7 +8,6 @@ import javax.swing.JFrame;
 
 import org.apache.commons.math3.analysis.function.Sqrt;
 
-import control.IO.audioIn.AudioAnalyser;
 import control.main.Driver;
 
 @SuppressWarnings("serial")
@@ -24,7 +16,7 @@ public class DisplayRenderer extends Canvas implements Runnable {
 	JFrame parent;
 
 	private ArrayList<Visualisation> visualisers;
-	private int currentVisualisation = 1;
+	private int currentVisualisation = 0;
 	
 	private Thread visRenderer;
 
@@ -113,7 +105,10 @@ public class DisplayRenderer extends Canvas implements Runnable {
 			while (delta >= 1) {
 				try {
 					visualisers.get(currentVisualisation).render(bs);
-				} catch (IllegalStateException e) {}
+				} catch (IllegalStateException e) {
+				} catch (NullPointerException e) {
+				}
+				
 				delta--;
 
 
