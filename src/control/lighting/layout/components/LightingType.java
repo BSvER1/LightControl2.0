@@ -1,4 +1,4 @@
-package control.lighting.layout;
+package control.lighting.layout.components;
 
 public enum LightingType {
 	LedStrip(),

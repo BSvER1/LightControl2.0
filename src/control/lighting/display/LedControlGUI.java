@@ -40,6 +40,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class LedControlGUI extends JFrame {
 
@@ -145,6 +147,11 @@ public class LedControlGUI extends JFrame {
 		txtBpm.setColumns(10);
 		
 		JButton btnQueue = new JButton("Queue");
+		btnQueue.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
 		panel.add(btnQueue, "cell 0 3,grow");
 		
 		JButton btnKillAll = new JButton("Kill All");

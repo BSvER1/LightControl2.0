@@ -1,19 +1,24 @@
-package control.lighting.layout;
+package control.lighting.layout.components;
 
 import java.awt.Color;
 
-public class LightingComponent {
+import control.lighting.layout.Location2D;
+import control.main.Driver;
+
+public abstract class LightingComponent {
 
 	private LightingType type;
 	private Color col;
 	private Location2D start, end;
 	private String identifier;
+	private boolean isGroup;
 	
-	public LightingComponent(LightingType type, String identifier, Location2D start, Location2D end) {
+	public LightingComponent(LightingType type, boolean isGroup, String identifier, Location2D start, Location2D end) {
 		this.type = type;
 		this.identifier = identifier;
 		this.start = start;
 		this.end = end;
+		this.isGroup = isGroup;
 	}
 
 	public LightingType getType() {
@@ -22,6 +27,14 @@ public class LightingComponent {
 
 	public void setType(LightingType type) {
 		this.type = type;
+	}
+
+	public boolean isGroup() {
+		return isGroup;
+	}
+
+	public void setGroup(boolean isGroup) {
+		this.isGroup = isGroup;
 	}
 
 	public Color getCol() {
@@ -41,6 +54,11 @@ public class LightingComponent {
 	}
 
 	public Location2D getEnd() {
+		if (getType() != LightingType.LedStrip) {
+			Driver.trace("asked for the end of a "+ getType().toString()+". Returning the position instead.");
+			return start;
+		}
+		
 		return end;
 	}
 
