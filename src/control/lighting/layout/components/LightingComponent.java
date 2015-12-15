@@ -1,11 +1,12 @@
 package control.lighting.layout.components;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 import control.lighting.layout.Location2D;
 import control.main.Driver;
 
-public abstract class LightingComponent {
+public abstract class LightingComponent implements Serializable{
 
 	private LightingType type;
 	private Color col;

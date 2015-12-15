@@ -1,4 +1,4 @@
-package control.IO.launchpad;
+package control.IO.midi.launchpad;
 
 public class LaunchpadInterfacer {
 
