@@ -14,7 +14,6 @@ import javax.swing.JFrame;
 import org.apache.commons.math3.analysis.function.Sqrt;
 
 import control.IO.audioIn.AudioAnalyser;
-import control.main.Driver;
 
 public class RainbowOscillioscope extends Visualisation {
 
@@ -62,7 +61,7 @@ public class RainbowOscillioscope extends Visualisation {
 
 		int xOffset = 0;
 		double yScale = 0.01;
-		double cutOff = 2.5;
+		//double cutOff = 2.5;
 
 		int yPos = getParent().getHeight()/2;
 		double xScale = Double.valueOf(getParent().getWidth())/999.0;

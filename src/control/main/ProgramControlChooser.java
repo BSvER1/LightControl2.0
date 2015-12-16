@@ -19,6 +19,8 @@ import control.visualiser.display.VisualiserWindow;
 
 public class ProgramControlChooser extends JFrame {
 
+	private static final long serialVersionUID = -4135909266991776380L;
+
 	private JPanel contentPane;
 	
 	private String productName = "LightControl";
@@ -107,7 +109,7 @@ public class ProgramControlChooser extends JFrame {
 		tglbtnLedDisplayControl.setFocusable(false);
 		
 		
-		this.setDefaultLookAndFeelDecorated(true);
+		JFrame.setDefaultLookAndFeelDecorated(true);
 		
 //		this.addComponentListener(new ComponentAdapter() {
 //		    public void componentResized(ComponentEvent e) {

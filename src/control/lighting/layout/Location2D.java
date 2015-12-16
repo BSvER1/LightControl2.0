@@ -4,10 +4,10 @@ public class Location2D {
 
 	private double x, y;
 	
-	public Location2D() {
-		x = 0;
-		y = 0;
-	}
+//	public Location2D() {
+//		x = 0;
+//		y = 0;
+//	}
 	
 	public Location2D(double x, double y) {
 		this.x = x;

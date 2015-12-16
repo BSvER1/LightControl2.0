@@ -12,6 +12,8 @@ import control.main.Driver;
 
 public class FancySlider extends JProgressBar {
 	
+	private static final long serialVersionUID = -5144184116425457493L;
+
 	public FancySlider() {
 		super();
 		setMaximum(1000);

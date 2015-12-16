@@ -9,29 +9,38 @@ import control.main.Driver;
 
 public abstract class Sequence implements Serializable{
 
+	private static final long serialVersionUID = 8896923278218931353L;
+
+	private String name;
+	
 	private int zone;
 	
 	private int maxTime = -1;
 	
 	private ConcurrentSkipListMap<ComponentTimePair<LightingComponent, Integer>, Color> sequence;
 	
-	public Sequence(int zone) {
+	public Sequence(String name, int zone) {
 		sequence = new ConcurrentSkipListMap<ComponentTimePair<LightingComponent, Integer>, Color>();
 		this.zone = zone;
+		this.name = name;
 	}
 	
 	public int getSequenceLength() {
 		return maxTime;
 	}
-
-	public ConcurrentSkipListMap<ComponentTimePair<LightingComponent, Integer>, Color> getSequence() {
+	
+	/**
+	 * internal method for getting the sequence.
+	 * @return the sequence as its internal data structure.
+	 */
+	@SuppressWarnings("unused")
+	@Deprecated
+	private ConcurrentSkipListMap<ComponentTimePair<LightingComponent, Integer>, Color> getSequence() {
 		return sequence;
 	}
 	
 	public void clearSequence() {
 		sequence.clear();
-		
-		
 		maxTime = -1;
 	}
 	
@@ -40,7 +49,7 @@ public abstract class Sequence implements Serializable{
 			Driver.trace("cant get the colour of grouped components");
 			return Color.BLACK;
 		}
-		ComponentTimePair<LightingComponent, Integer> key = getKey(component, time);
+		//ComponentTimePair<LightingComponent, Integer> key = getKey(component, time);
 		
 		return sequence.get(sequence.floorKey(getKey(component, time)));
 	}
@@ -63,4 +72,14 @@ public abstract class Sequence implements Serializable{
 	public void setZone(int zone) {
 		this.zone = zone;
 	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public abstract void initSequence();
 }

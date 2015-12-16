@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 public class ArrayHelper {
 
+	@SafeVarargs
 	public static <T> T[] concatAll(T[] first, T[]... rest) {
 		int totalLength = first.length;
 		for (T[] array : rest) {

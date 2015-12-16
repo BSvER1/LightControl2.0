@@ -29,7 +29,7 @@ public class AudioAnalyser implements Runnable {
 	int length = SoundCaptureThread.length;
 	
 	public AudioAnalyser(SoundCaptureThread mic) {
-		this.mic = mic;
+		AudioAnalyser.mic = mic;
 		fft = new FastFourierTransformer(DftNormalization.UNITARY);
 		sqrt = new Sqrt();
 		pow = new Pow();

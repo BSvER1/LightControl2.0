@@ -1,9 +1,5 @@
 package control.main;
 
-import java.awt.EventQueue;
-
-import control.visualiser.display.VisualiserWindow;
-
 public class Driver {
 
 	private static boolean TRACING = true;
@@ -11,16 +7,15 @@ public class Driver {
 	public static void main(String[] args) {
 		Driver.trace("Hello Light Control 2.0!");
 
-		
 		new ProgramControlChooser();
 		
 		
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				
-				//new ProgramControlChooser();
-			}
-		});
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				
+//				//new ProgramControlChooser();
+//			}
+//		});
 		
 	}
 	

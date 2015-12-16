@@ -2,8 +2,10 @@ package control.lighting.sequences;
 
 import java.io.Serializable;
 
-public final class ComponentTimePair<L, T extends Comparable<T>> implements Serializable{
+public final class ComponentTimePair<L, T extends Comparable<T>> implements Serializable {
 
+	private static final long serialVersionUID = 5299370110962739628L;
+	
 	private final L component;
 	private final T time;
 	private final int hashCode;

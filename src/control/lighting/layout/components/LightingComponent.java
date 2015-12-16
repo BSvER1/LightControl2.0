@@ -6,20 +6,24 @@ import java.io.Serializable;
 import control.lighting.layout.Location2D;
 import control.main.Driver;
 
-public abstract class LightingComponent implements Serializable{
+public abstract class LightingComponent implements Serializable {
 
+	private static final long serialVersionUID = 8060160539881045255L;
+	
 	private LightingType type;
 	private Color col;
 	private Location2D start, end;
 	private String identifier;
 	private boolean isGroup;
+	private int zone;
 	
-	public LightingComponent(LightingType type, boolean isGroup, String identifier, Location2D start, Location2D end) {
+	public LightingComponent(LightingType type, boolean isGroup, String identifier, Location2D start, Location2D end, int zone) {
 		this.type = type;
 		this.identifier = identifier;
 		this.start = start;
 		this.end = end;
 		this.isGroup = isGroup;
+		this.zone = zone;
 	}
 
 	public LightingType getType() {
@@ -74,4 +78,14 @@ public abstract class LightingComponent implements Serializable{
 	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
 	}
+
+	public int getZone() {
+		return zone;
+	}
+
+	public void setZone(int zone) {
+		this.zone = zone;
+	}
+	
+	
 }
